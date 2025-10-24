@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MetersActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Введите показания счетчиков"
+        android:textSize="28sp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/button_login_color"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Вода (куб.м)"
+        android:layout_marginTop="8dp"/>
+
+    <EditText
+        android:id="@+id/etWater"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Газ (куб.м)"
+        android:layout_marginTop="8dp"/>
+
+    <EditText
+        android:id="@+id/etGas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Электричество (кВт/ч)"
+        android:layout_marginTop="8dp"/>
+
+    <EditText
+        android:id="@+id/etElectricity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="numberDecimal"/>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Сохранить"
+        android:layout_marginTop="16dp"
+        android:background="@color/button_login_color"
+        android:textColor="@color/white"/>
+
+</LinearLayout>

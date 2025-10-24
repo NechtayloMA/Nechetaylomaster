@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#4f6a84</color>
+    <color name="purple_500">#14b9ff</color>
+    <color name="purple_700">#14b9ff</color>
+    <color name="teal_200">#14b9ff</color>
+    <color name="teal_700">#14b9ff</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="button_meters_color">#4f6a84</color>
+    <color name="button_login_color">#b50202</color>
+    <color name="button_view_applications_background">#b50202</color>
+
+    <!-- Цвета для приоритетов -->
+    <color name="priority_low">#4CAF50</color>
+    <color name="priority_medium">#ffd438</color>
+    <color name="priority_high">#b50202</color>
+
+    <!-- Цвета для статусов -->
+    <color name="status_pending">#FFC107</color>
+    <color name="status_in_progress">#2196F3</color>
+    <color name="status_completed">#4CAF50</color>
+    <color name="status_rejected">#d1d1d1</color>
+
+</resources>

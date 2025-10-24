@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f5f5f5">
+
+    <!-- Заголовок -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Мои заявки"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:textColor="#b50202" />
+
+    <!-- RecyclerView для списка заявок -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewApplications"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false" />
+
+    <!-- Сообщение при пустом списке -->
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Заявок пока нет\n\nСоздайте первую заявку!"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textColor="#333"
+        android:visibility="gone" />
+
+</LinearLayout>
