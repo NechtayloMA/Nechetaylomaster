@@ -1,6 +1,6 @@
 package com.example.comfortandmodernityoftheuniversityenvironment
 
-import android.os.Bundle
+//import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
 class AboutActivity : AppCompatActivity() {
