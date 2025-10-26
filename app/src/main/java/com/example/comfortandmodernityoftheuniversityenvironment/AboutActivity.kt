@@ -21,7 +21,7 @@ class AboutActivity : AppCompatActivity() {
     }
 
     // Опционально: обработка кнопки "Назад" в ActionBar
-    //override fun onSupportNavigateUp(): Boolean {
+    override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
     }

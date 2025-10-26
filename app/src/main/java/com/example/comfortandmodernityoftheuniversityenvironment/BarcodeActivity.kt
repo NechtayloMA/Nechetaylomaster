@@ -63,7 +63,7 @@ class BarcodeActivity : AppCompatActivity() {
             integrator.initiateScan()
         }
     }
-
+////
     // Обработка результата от сканера (и других активностей)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         // Парсинг результата с помощью ZXing
