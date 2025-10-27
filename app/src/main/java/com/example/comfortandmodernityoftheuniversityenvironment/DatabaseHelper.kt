@@ -50,7 +50,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COLUMN_PRODUCT_NAME = "product_name"   // Название продукта
         const val COLUMN_DESCRIPTION = "description"     // Описание продукта
     }
-
+;
     // Метод создания базы данных (вызывается при первом запуске)
     override fun onCreate(db: SQLiteDatabase) {
         // SQL-запрос для создания таблицы пользователей
