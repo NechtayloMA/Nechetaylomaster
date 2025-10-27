@@ -1,5 +1,5 @@
 package com.example.comfortandmodernityoftheuniversityenvironment
-///
+
 // Импорт класса Bundle для сохранения состояния активности
 import android.os.Bundle
 // Импорт класса Button для работы с кнопками
