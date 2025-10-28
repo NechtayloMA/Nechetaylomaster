@@ -1,5 +1,5 @@
 package com.example.comfortandmodernityoftheuniversityenvironment
-
+бб
 // Импорт класса Intent для перехода между активностями
 import android.content.Intent
 // Импорт класса Bundle для сохранения состояния
