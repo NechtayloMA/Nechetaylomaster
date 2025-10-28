@@ -12,7 +12,7 @@ import android.widget.EditText
 import android.widget.Toast
 // Импорт базового класса Activity
 import androidx.appcompat.app.AppCompatActivity
-
+//
 // Класс активности для авторизации пользователей
 class LoginActivity : AppCompatActivity() {
 
