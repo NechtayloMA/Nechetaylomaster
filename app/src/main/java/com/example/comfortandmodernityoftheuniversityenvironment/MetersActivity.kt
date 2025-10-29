@@ -31,6 +31,8 @@ class MetersActivity : AppCompatActivity() {
     // Помощник для работы с базой данных
     private lateinit var dbHelper: DatabaseHelper
 
+//method
+
     // Основной метод, вызываемый при создании активности
     override fun onCreate(savedInstanceState: Bundle?) {
         // Вызов метода родительского класса
