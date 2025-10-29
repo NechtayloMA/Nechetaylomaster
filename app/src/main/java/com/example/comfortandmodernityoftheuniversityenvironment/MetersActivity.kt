@@ -63,7 +63,7 @@ class MetersActivity : AppCompatActivity() {
                 // Выход из обработчика
                 return@setOnClickListener
             }
-
+//
             // Блок try-catch для обработки ошибок преобразования типов
             try {
                 // Преобразование строк в числа с плавающей точкой
