@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 // Импорт класса для работы с датой и временем
 import java.util.*
 
-//
+
 
 // Класс активности для ввода показаний счетчиков
 class MetersActivity : AppCompatActivity() {
