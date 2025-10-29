@@ -62,6 +62,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             )
         """.trimIndent()
 
+//
+
         // SQL-запрос для создания таблицы показаний счетчиков
         val createMetersTable = """
             CREATE TABLE $TABLE_METERS (
