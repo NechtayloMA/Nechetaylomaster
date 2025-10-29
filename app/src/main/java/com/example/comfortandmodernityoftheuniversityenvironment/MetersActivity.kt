@@ -71,7 +71,7 @@ class MetersActivity : AppCompatActivity() {
                 val gas = gasStr.toDouble()
                 val electricity = electricityStr.toDouble()
 
-//
+
                 // Временное значение ID пользователя (в реальном приложении берется из сессии)
                 val userId = 1
                 // Форматирование текущей даты в строку (год-месяц-день)
