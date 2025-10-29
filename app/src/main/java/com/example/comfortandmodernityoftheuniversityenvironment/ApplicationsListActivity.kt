@@ -59,7 +59,7 @@ class ApplicationsListActivity : AppCompatActivity() {
             android.util.Log.e("ApplicationsListActivity", "Error loading applications", e)
         }
     }
-
+//
     override fun onResume() {
         super.onResume()
         // Обновляем список при возвращении на экран
