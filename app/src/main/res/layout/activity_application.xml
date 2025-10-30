@@ -75,7 +75,7 @@
                 android:scrollbars="vertical" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
+//
         <!-- Поле для выбора приоритета -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
