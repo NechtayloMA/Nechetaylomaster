@@ -33,7 +33,7 @@
                 android:textColor="#333333"
                 android:maxLines="1"
                 android:ellipsize="end" />
-
+//
             <TextView
                 android:id="@+id/tvId"
                 android:layout_width="wrap_content"
