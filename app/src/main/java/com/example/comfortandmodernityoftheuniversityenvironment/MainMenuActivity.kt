@@ -30,7 +30,7 @@ class MainMenuActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnRequests).setOnClickListener {
             startActivity(Intent(this, ApplicationsListActivity::class.java))
         }
-
+//
         // Настройка кнопки "О программе" и обработчик нажатия
         findViewById<Button>(R.id.btnAbout).setOnClickListener {
             startActivity(Intent(this, AboutActivity::class.java))
