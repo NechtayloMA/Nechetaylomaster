@@ -22,4 +22,10 @@
     <color name="status_completed">#4CAF50</color>
     <color name="status_rejected">#d1d1d1</color>
 
+    <!-- Добавьте эти цвета -->
+    <color name="blue_light">#FF2196F3</color>
+    <color name="green_light">#FF4CAF50</color>
+    <color name="orange_light">#FFFF9800</color>
+    <color name="red_light">#FFF44336</color>
+
 </resources>

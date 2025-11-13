@@ -14,7 +14,7 @@ class ApplicationsActivity : AppCompatActivity() {
     private lateinit var etDescription: EditText
     private lateinit var actvPriority: MaterialAutoCompleteTextView
     private lateinit var btnSubmit: Button
-    private lateinit var btnViewApplications: Button // ДОБАВЛЯЕМ ПЕРЕМЕННУЮ
+    private lateinit var btnViewApplications: Button
 
     private val priorityOptions = arrayOf("Низкий", "Средний", "Высокий", "Критический")
 
@@ -28,7 +28,7 @@ class ApplicationsActivity : AppCompatActivity() {
         // Инициализация DatabaseHelper
         dbHelper = DatabaseHelper(this)
 
-        // Проверка статуса базы данных
+        // Упрощенная проверка базы данных
         checkDatabaseStatus()
 
         // Настройка выпадающего списка приоритетов
@@ -43,27 +43,17 @@ class ApplicationsActivity : AppCompatActivity() {
         etDescription = findViewById(R.id.etDescription)
         actvPriority = findViewById(R.id.actvPriority)
         btnSubmit = findViewById(R.id.btnSubmit)
-        btnViewApplications = findViewById(R.id.btnViewApplications) // ИНИЦИАЛИЗИРУЕМ КНОПКУ
+        btnViewApplications = findViewById(R.id.btnViewApplications)
     }
 
     private fun checkDatabaseStatus() {
         try {
-            // Проверяем существование таблицы
-            val isTableExists = dbHelper.checkDatabase()
-            android.util.Log.d("ApplicationsActivity", "Table exists: $isTableExists")
+            // Простая проверка - пытаемся получить список заявок
+            val applications = dbHelper.getAllApplications()
+            android.util.Log.d("ApplicationsActivity", "Database check: Found ${applications.size} applications")
 
-            // Проверяем структуру таблицы
-            val isStructureOk = dbHelper.checkTableStructure()
-            android.util.Log.d("ApplicationsActivity", "Table structure OK: $isStructureOk")
-
-            if (!isTableExists) {
-                showError("Ошибка: таблица заявок не существует")
-                // Попробуем пересоздать таблицу
-                dbHelper.onUpgrade(dbHelper.writableDatabase, 1, 1)
-            }
-
-            // Добавляем тестового пользователя если нужно
-            addTestUserIfNeeded()
+            // Создаем тестового пользователя если нужно
+            createTestUserIfNeeded()
 
         } catch (e: Exception) {
             android.util.Log.e("ApplicationsActivity", "Database check failed", e)
@@ -71,15 +61,17 @@ class ApplicationsActivity : AppCompatActivity() {
         }
     }
 
-    private fun addTestUserIfNeeded() {
+    private fun createTestUserIfNeeded() {
         try {
-            // В реальном приложении здесь должна быть логика получения реального пользователя
-            val testUserId = dbHelper.addTestUser()
+            // Пытаемся добавить тестового пользователя
+            val testUserId = dbHelper.addUser("testuser", "password123")
             if (testUserId != -1L) {
                 android.util.Log.d("ApplicationsActivity", "Test user added with ID: $testUserId")
+            } else {
+                android.util.Log.d("ApplicationsActivity", "Test user already exists")
             }
         } catch (e: Exception) {
-            android.util.Log.e("ApplicationsActivity", "Error adding test user", e)
+            android.util.Log.e("ApplicationsActivity", "Error creating test user", e)
         }
     }
 
@@ -87,7 +79,6 @@ class ApplicationsActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, priorityOptions)
         actvPriority.setAdapter(adapter)
 
-        // Установим обработчик для отладки
         actvPriority.setOnItemClickListener { parent, view, position, id ->
             val selectedPriority = priorityOptions[position]
             android.util.Log.d("ApplicationsActivity", "Selected priority: $selectedPriority")
@@ -95,12 +86,10 @@ class ApplicationsActivity : AppCompatActivity() {
     }
 
     private fun setupButtonListeners() {
-        // Обработчик для кнопки отправки
         btnSubmit.setOnClickListener {
             submitApplication()
         }
 
-        // Обработчик для кнопки просмотра заявок
         btnViewApplications.setOnClickListener {
             openApplicationsList()
         }
@@ -121,10 +110,8 @@ class ApplicationsActivity : AppCompatActivity() {
         val description = etDescription.text.toString().trim()
         val priority = actvPriority.text.toString().trim()
 
-        // Логируем вводимые данные
         android.util.Log.d("ApplicationsActivity", "Submit attempt - Subject: '$subject', Description: '${description.take(30)}...', Priority: '$priority'")
 
-        // Проверка на пустые поля
         if (!validateInput(subject, description, priority)) {
             return
         }
@@ -181,7 +168,7 @@ class ApplicationsActivity : AppCompatActivity() {
     }
 
     private fun showSuccess(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Заявка успешно отправлена!", Toast.LENGTH_SHORT).show()
         android.util.Log.d("ApplicationsActivity", "Success: $message")
     }
 
@@ -192,15 +179,12 @@ class ApplicationsActivity : AppCompatActivity() {
     }
 
     private fun getCurrentUserId(): Int {
-        // В реальном приложении здесь должна быть логика получения ID авторизованного пользователя
-        // Например, из SharedPreferences, базы данных или Intent
-        // Временно возвращаем 1 для тестирования
+        // Временное решение - возвращаем ID первого пользователя
         return 1
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        // Закрываем соединение с базой данных
         dbHelper.close()
     }
 }

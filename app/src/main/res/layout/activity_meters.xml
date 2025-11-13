@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="Введите показания счетчиков"
         android:textSize="28sp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:layout_marginBottom="16dp"
         android:textColor="@color/button_login_color"/>
 
@@ -60,5 +60,46 @@
         android:layout_marginTop="16dp"
         android:background="@color/button_login_color"
         android:textColor="@color/white"/>
+
+    <!-- НОВЫЕ КНОПКИ ДЛЯ НАВИГАЦИИ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/btnHistory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="История"
+            android:layout_marginEnd="4dp"
+            android:background="@color/blue_light"
+            android:textColor="@color/white"/>
+
+        <!-- Измените текст кнопки -->
+        <Button
+            android:id="@+id/btnCharts"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Анализ"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@color/green_light"
+            android:textColor="@color/white"/>
+
+        <Button
+            android:id="@+id/btnPayments"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Платежи"
+            android:layout_marginStart="4dp"
+            android:background="@color/orange_light"
+            android:textColor="@color/white"/>
+
+    </LinearLayout>
 
 </LinearLayout>

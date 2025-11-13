@@ -22,6 +22,16 @@
 
         <activity android:name=".MainMenuActivity" />
         <activity android:name=".MetersActivity" />
+        <!-- ДОБАВЬТЕ ЭТИ НОВЫЕ АКТИВНОСТИ -->
+        <activity
+            android:name=".HistoryActivity"
+            android:label="История показаний" />
+        <activity
+            android:name=".ChartsActivity"
+            android:label="Графики потребления" />
+        <activity
+            android:name=".PaymentsActivity"
+            android:label="Учет платежей" />
         <activity android:name=".BarcodeActivity" />
         <activity android:name=".AboutActivity" />
         <activity android:name=".ApplicationsActivity"/>
