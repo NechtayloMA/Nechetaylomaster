@@ -11,24 +11,24 @@ class MainMenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_menu)
 
-        // Настройка кнопки "Показания счетчиков" и обработчик нажатия
-        findViewById<Button>(R.id.btnMeters).setOnClickListener {
-            startActivity(Intent(this, MetersActivity::class.java))
+        // Настройка кнопки "Коммунальные услуги" и обработчик нажатия
+        findViewById<Button>(R.id.btnUtilities).setOnClickListener {
+            startActivity(Intent(this, UtilitiesActivity::class.java))
         }
 
-        // Настройка кнопки "Сканер штрих-кодов" и обработчик нажатия
-        findViewById<Button>(R.id.btnBarcode).setOnClickListener {
-            startActivity(Intent(this, BarcodeActivity::class.java))
+        // Настройка кнопки "Инвентаризация" и обработчик нажатия
+        findViewById<Button>(R.id.btnInventory).setOnClickListener {
+            startActivity(Intent(this, InventoryActivity::class.java))
         }
 
-        // Настройка кнопки "Создать заявку" и обработчик нажатия
-        findViewById<Button>(R.id.btnCreateRequest).setOnClickListener {
-            startActivity(Intent(this, ApplicationsActivity::class.java))
-        }
-
-        // Настройка кнопки "Мои заявки" и обработчик нажатия
+        // Настройка кнопки "Заявки" и обработчик нажатия
         findViewById<Button>(R.id.btnRequests).setOnClickListener {
-            startActivity(Intent(this, ApplicationsListActivity::class.java))
+            startActivity(Intent(this, RequestsActivity::class.java))
+        }
+
+        // Настройка кнопки "Настройки" и обработчик нажатия
+        findViewById<Button>(R.id.btnSettings).setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         // Настройка кнопки "О программе" и обработчик нажатия

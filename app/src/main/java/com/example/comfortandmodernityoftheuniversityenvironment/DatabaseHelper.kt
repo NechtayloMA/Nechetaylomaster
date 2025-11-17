@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -11,7 +12,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "AppDatabase.db"
-        private const val DATABASE_VERSION = 2 // Увеличиваем версию для миграции
+        private const val DATABASE_VERSION = 3
 
         // Таблица пользователей
         const val TABLE_USERS = "users"
@@ -44,7 +45,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COLUMN_PRODUCT_NAME = "product_name"
         const val COLUMN_DESCRIPTION = "description"
 
-        // НОВАЯ: Таблица платежей
+        // Таблица платежей
         const val TABLE_PAYMENTS = "payments"
         const val COLUMN_PAYMENT_ID = "payment_id"
         const val COLUMN_USER_ID_PAYMENT = "user_id"
@@ -53,6 +54,30 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COLUMN_SERVICE_TYPE = "service_type"
         const val COLUMN_STATUS = "status"
         const val COLUMN_PERIOD = "period"
+
+        // Таблицы для инвентаризации
+        const val TABLE_INVENTORY = "inventory"
+        const val COLUMN_INVENTORY_ID = "inventory_id"
+        const val COLUMN_INVENTORY_NAME = "inventory_name"
+        const val COLUMN_INVENTORY_NUMBER = "inventory_number"
+        const val COLUMN_LOCATION = "location"
+        const val COLUMN_CONDITION = "condition"
+        const val COLUMN_PHOTO_PATH = "photo_path"
+        const val COLUMN_BARCODE_INV = "barcode_inv"
+        const val COLUMN_DESCRIPTION_INV = "description_inv"
+        const val COLUMN_ADDED_DATE = "added_date"
+
+        const val TABLE_APPLICATION_STATUS = "application_status"
+        const val COLUMN_STATUS_ID = "status_id"
+        const val COLUMN_APPLICATION_ID_FK = "application_id"
+        const val COLUMN_STATUS_APP = "status_app"
+        const val COLUMN_STATUS_DATE = "status_date"
+        const val COLUMN_ASSIGNED_TO = "assigned_to"
+
+        const val TABLE_USER_ROLES = "user_roles"
+        const val COLUMN_ROLE_ID = "role_id"
+        const val COLUMN_USER_ID_ROLE = "user_id_role"
+        const val COLUMN_ROLE = "role"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -101,7 +126,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             )
         """.trimIndent()
 
-        // НОВАЯ: Таблица платежей
+        // Таблица платежей
         val createPaymentsTable = """
             CREATE TABLE $TABLE_PAYMENTS (
                 $COLUMN_PAYMENT_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -115,17 +140,60 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             )
         """.trimIndent()
 
+        // Таблица инвентаризации
+        val createInventoryTable = """
+            CREATE TABLE $TABLE_INVENTORY (
+                $COLUMN_INVENTORY_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_INVENTORY_NAME TEXT NOT NULL,
+                $COLUMN_INVENTORY_NUMBER TEXT UNIQUE NOT NULL,
+                $COLUMN_LOCATION TEXT NOT NULL,
+                $COLUMN_CONDITION TEXT NOT NULL,
+                $COLUMN_DESCRIPTION_INV TEXT,
+                $COLUMN_BARCODE_INV TEXT UNIQUE,
+                $COLUMN_PHOTO_PATH TEXT,
+                $COLUMN_ADDED_DATE TEXT NOT NULL
+            )
+        """.trimIndent()
+
+        // Таблица статусов заявок
+        val createApplicationStatusTable = """
+            CREATE TABLE $TABLE_APPLICATION_STATUS (
+                $COLUMN_STATUS_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_APPLICATION_ID_FK INTEGER NOT NULL,
+                $COLUMN_STATUS_APP TEXT NOT NULL,
+                $COLUMN_STATUS_DATE TEXT NOT NULL,
+                $COLUMN_ASSIGNED_TO INTEGER,
+                FOREIGN KEY ($COLUMN_APPLICATION_ID_FK) REFERENCES $TABLE_APPLICATION($COLUMN_APPLICATION_ID),
+                FOREIGN KEY ($COLUMN_ASSIGNED_TO) REFERENCES $TABLE_USERS($COLUMN_USER_ID)
+            )
+        """.trimIndent()
+
+        // Таблица ролей пользователей
+        val createUserRolesTable = """
+            CREATE TABLE $TABLE_USER_ROLES (
+                $COLUMN_ROLE_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_USER_ID_ROLE INTEGER NOT NULL,
+                $COLUMN_ROLE TEXT NOT NULL,
+                FOREIGN KEY ($COLUMN_USER_ID_ROLE) REFERENCES $TABLE_USERS($COLUMN_USER_ID)
+            )
+        """.trimIndent()
+
         // Выполнение всех запросов
         db.execSQL(createUserTable)
         db.execSQL(createMetersTable)
         db.execSQL(createApplicationTable)
         db.execSQL(createBarcodesTable)
         db.execSQL(createPaymentsTable)
+        db.execSQL(createInventoryTable)
+        db.execSQL(createApplicationStatusTable)
+        db.execSQL(createUserRolesTable)
 
         // Добавление тестовых данных
         insertSampleBarcodes(db)
         insertSamplePayments(db)
         insertSampleUser(db)
+        insertSampleInventory(db)
+        insertSampleRoles(db)
     }
 
     private fun insertSampleBarcodes(db: SQLiteDatabase) {
@@ -149,7 +217,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         barcodes.forEach { db.insert(TABLE_BARCODES, null, it) }
     }
 
-    // НОВЫЙ: Добавление тестовых платежей
     private fun insertSamplePayments(db: SQLiteDatabase) {
         val payments = listOf(
             ContentValues().apply {
@@ -180,7 +247,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         payments.forEach { db.insert(TABLE_PAYMENTS, null, it) }
     }
 
-    // НОВЫЙ: Добавление тестового пользователя
     private fun insertSampleUser(db: SQLiteDatabase) {
         val user = ContentValues().apply {
             put(COLUMN_USERNAME, "testuser")
@@ -189,16 +255,66 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.insert(TABLE_USERS, null, user)
     }
 
+    private fun insertSampleInventory(db: SQLiteDatabase) {
+        val inventoryItems = listOf(
+            ContentValues().apply {
+                put(COLUMN_INVENTORY_NAME, "Компьютерный стол")
+                put(COLUMN_INVENTORY_NUMBER, "INV-001")
+                put(COLUMN_LOCATION, "Кабинет 101")
+                put(COLUMN_CONDITION, "Отличное")
+                put(COLUMN_DESCRIPTION_INV, "Деревянный компьютерный стол")
+                put(COLUMN_BARCODE_INV, "123456789012")
+                put(COLUMN_ADDED_DATE, "2024-01-15")
+            },
+            ContentValues().apply {
+                put(COLUMN_INVENTORY_NAME, "Проектор")
+                put(COLUMN_INVENTORY_NUMBER, "INV-002")
+                put(COLUMN_LOCATION, "Аудитория 201")
+                put(COLUMN_CONDITION, "Хорошее")
+                put(COLUMN_DESCRIPTION_INV, "Мультимедийный проектор")
+                put(COLUMN_BARCODE_INV, "234567890123")
+                put(COLUMN_ADDED_DATE, "2024-01-16")
+            },
+            ContentValues().apply {
+                put(COLUMN_INVENTORY_NAME, "Стул офисный")
+                put(COLUMN_INVENTORY_NUMBER, "INV-003")
+                put(COLUMN_LOCATION, "Кабинет 102")
+                put(COLUMN_CONDITION, "Удовлетворительное")
+                put(COLUMN_DESCRIPTION_INV, "Офисный стул с регулировкой высоты")
+                put(COLUMN_BARCODE_INV, "345678901234")
+                put(COLUMN_ADDED_DATE, "2024-01-17")
+            }
+        )
+        inventoryItems.forEach { db.insert(TABLE_INVENTORY, null, it) }
+    }
+
+    private fun insertSampleRoles(db: SQLiteDatabase) {
+        val roles = listOf(
+            ContentValues().apply {
+                put(COLUMN_USER_ID_ROLE, 1)
+                put(COLUMN_ROLE, "user")
+            },
+            ContentValues().apply {
+                put(COLUMN_USER_ID_ROLE, 1)
+                put(COLUMN_ROLE, "executor")
+            }
+        )
+        roles.forEach { db.insert(TABLE_USER_ROLES, null, it) }
+    }
+
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_METERS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_BARCODES")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_APPLICATION")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_PAYMENTS")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_INVENTORY")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_APPLICATION_STATUS")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_USER_ROLES")
         onCreate(db)
     }
 
-    // === СУЩЕСТВУЮЩИЕ МЕТОДЫ ===
+    // === МЕТОДЫ РАБОТЫ С ПОЛЬЗОВАТЕЛЯМИ ===
     fun addUser(username: String, password: String): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
@@ -218,6 +334,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return count > 0
     }
 
+    // === МЕТОДЫ РАБОТЫ С СЧЕТЧИКАМИ ===
     fun addMeterReading(userId: Int, water: Double, gas: Double, electricity: Double, date: String): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
@@ -230,6 +347,32 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return db.insert(TABLE_METERS, null, values)
     }
 
+    fun getMeterReadings(userId: Int): List<MeterReading> {
+        val readings = mutableListOf<MeterReading>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM $TABLE_METERS WHERE $COLUMN_USER_ID_FK = ? ORDER BY $COLUMN_DATE DESC",
+            arrayOf(userId.toString())
+        )
+
+        cursor.use {
+            while (it.moveToNext()) {
+                val reading = MeterReading(
+                    id = it.getInt(it.getColumnIndexOrThrow(COLUMN_METER_ID)),
+                    userId = it.getInt(it.getColumnIndexOrThrow(COLUMN_USER_ID_FK)),
+                    water = it.getDouble(it.getColumnIndexOrThrow(COLUMN_WATER)),
+                    gas = it.getDouble(it.getColumnIndexOrThrow(COLUMN_GAS)),
+                    electricity = it.getDouble(it.getColumnIndexOrThrow(COLUMN_ELECTRICITY)),
+                    date = it.getString(it.getColumnIndexOrThrow(COLUMN_DATE))
+                )
+                readings.add(reading)
+            }
+        }
+        db.close()
+        return readings
+    }
+
+    // === МЕТОДЫ РАБОТЫ СО ШТРИХ-КОДАМИ ===
     fun getBarcodeInfo(barcodeValue: String): BarcodeInfo? {
         val db = this.readableDatabase
         val selection = "$COLUMN_BARCODE_VALUE = ?"
@@ -239,12 +382,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return if (cursor.moveToFirst()) {
             val productName = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PRODUCT_NAME))
             val description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION))
+            cursor.close()
             BarcodeInfo(barcodeValue, productName, description)
         } else {
+            cursor.close()
             null
-        }.also { cursor.close() }
+        }
     }
 
+    // === МЕТОДЫ РАБОТЫ С ЗАЯВКАМИ ===
     fun addApplication(userId: Int, title: String, content: String, priority: String): Long {
         val db = this.writableDatabase
         var result: Long = -1
@@ -259,7 +405,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             }
             result = db.insert(TABLE_APPLICATION, null, values)
         } catch (e: Exception) {
-            android.util.Log.e("DatabaseHelper", "Exception in addApplication: ${e.message}", e)
+            Log.e("DatabaseHelper", "Exception in addApplication: ${e.message}", e)
         } finally {
             db.close()
         }
@@ -271,7 +417,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = this.readableDatabase
         val cursor = db.rawQuery("SELECT * FROM $TABLE_APPLICATION ORDER BY $COLUMN_APPLICATION_ID DESC", null)
 
-        cursor?.use {
+        cursor.use {
             while (it.moveToNext()) {
                 val application = Application(
                     id = it.getInt(it.getColumnIndexOrThrow(COLUMN_APPLICATION_ID)),
@@ -296,7 +442,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             arrayOf(userId.toString())
         )
 
-        cursor?.use {
+        cursor.use {
             while (it.moveToNext()) {
                 val application = Application(
                     id = it.getInt(it.getColumnIndexOrThrow(COLUMN_APPLICATION_ID)),
@@ -313,35 +459,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return applications
     }
 
-    // === НОВЫЕ МЕТОДЫ ДЛЯ ИСТОРИИ И ПЛАТЕЖЕЙ ===
-
-    // Получение истории показаний
-    fun getMeterReadings(userId: Int): List<MeterReading> {
-        val readings = mutableListOf<MeterReading>()
-        val db = this.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT * FROM $TABLE_METERS WHERE $COLUMN_USER_ID_FK = ? ORDER BY $COLUMN_DATE DESC",
-            arrayOf(userId.toString())
-        )
-
-        cursor?.use {
-            while (it.moveToNext()) {
-                val reading = MeterReading(
-                    id = it.getInt(it.getColumnIndexOrThrow(COLUMN_METER_ID)),
-                    userId = it.getInt(it.getColumnIndexOrThrow(COLUMN_USER_ID_FK)),
-                    water = it.getDouble(it.getColumnIndexOrThrow(COLUMN_WATER)),
-                    gas = it.getDouble(it.getColumnIndexOrThrow(COLUMN_GAS)),
-                    electricity = it.getDouble(it.getColumnIndexOrThrow(COLUMN_ELECTRICITY)),
-                    date = it.getString(it.getColumnIndexOrThrow(COLUMN_DATE))
-                )
-                readings.add(reading)
-            }
-        }
-        db.close()
-        return readings
-    }
-
-    // Получение платежей пользователя
+    // === МЕТОДЫ РАБОТЫ С ПЛАТЕЖАМИ ===
     fun getPayments(userId: Int): List<Payment> {
         val payments = mutableListOf<Payment>()
         val db = this.readableDatabase
@@ -350,7 +468,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             arrayOf(userId.toString())
         )
 
-        cursor?.use {
+        cursor.use {
             while (it.moveToNext()) {
                 val payment = Payment(
                     id = it.getInt(it.getColumnIndexOrThrow(COLUMN_PAYMENT_ID)),
@@ -368,7 +486,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return payments
     }
 
-    // Добавление нового платежа
     fun addPayment(userId: Int, amount: Double, serviceType: String, period: String): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
@@ -382,19 +499,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return db.insert(TABLE_PAYMENTS, null, values)
     }
 
-    // Получение статистики по платежам
     fun getPaymentStatistics(userId: Int): PaymentStatistics {
         val db = this.readableDatabase
+        var totalPaid = 0.0
+        var totalPending = 0.0
+        val serviceBreakdown = mutableMapOf<String, Double>()
+
+        // Подсчет по типам услуг
         val cursor = db.rawQuery(
             "SELECT $COLUMN_SERVICE_TYPE, SUM($COLUMN_AMOUNT) as total FROM $TABLE_PAYMENTS WHERE $COLUMN_USER_ID_PAYMENT = ? GROUP BY $COLUMN_SERVICE_TYPE",
             arrayOf(userId.toString())
         )
 
-        var totalPaid = 0.0
-        var totalPending = 0.0
-        val serviceBreakdown = mutableMapOf<String, Double>()
-
-        cursor?.use {
+        cursor.use {
             while (it.moveToNext()) {
                 val serviceType = it.getString(it.getColumnIndexOrThrow(COLUMN_SERVICE_TYPE))
                 val total = it.getDouble(it.getColumnIndexOrThrow("total"))
@@ -408,7 +525,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             arrayOf(userId.toString())
         )
 
-        statusCursor?.use {
+        statusCursor.use {
             while (it.moveToNext()) {
                 val status = it.getString(it.getColumnIndexOrThrow(COLUMN_STATUS))
                 val total = it.getDouble(it.getColumnIndexOrThrow("total"))
@@ -420,55 +537,174 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             }
         }
 
-        // В классе DatabaseHelper добавьте эти методы:
-
-        // Метод проверки существования таблицы заявок
-        fun checkDatabase(): Boolean {
-            val db = this.readableDatabase
-            return try {
-                db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='$TABLE_APPLICATION'", null).use { cursor ->
-                    cursor != null && cursor.count > 0
-                }
-            } catch (e: Exception) {
-                android.util.Log.e("DatabaseHelper", "Error checking database", e)
-                false
-            } finally {
-                db.close()
-            }
-        }
-
-        // Метод проверки структуры таблицы заявок
-        fun checkTableStructure(): Boolean {
-            val db = this.readableDatabase
-            return try {
-                db.rawQuery("PRAGMA table_info($TABLE_APPLICATION)", null).use { cursor ->
-                    if (cursor != null) {
-                        android.util.Log.d("DatabaseHelper", "Table structure of $TABLE_APPLICATION:")
-                        while (cursor.moveToNext()) {
-                            val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
-                            val type = cursor.getString(cursor.getColumnIndexOrThrow("type"))
-                            android.util.Log.d("DatabaseHelper", "Column: $name, Type: $type")
-                        }
-                        true
-                    } else {
-                        false
-                    }
-                }
-            } catch (e: Exception) {
-                android.util.Log.e("DatabaseHelper", "Error checking table structure", e)
-                false
-            } finally {
-                db.close()
-            }
-        }
-
-        // Метод для добавления тестового пользователя (для отладки)
-        fun addTestUser(): Long {
-            return addUser("testuser", "testpassword")
-        }
-
         db.close()
         return PaymentStatistics(totalPaid, totalPending, serviceBreakdown)
+    }
+
+    // === МЕТОДЫ РАБОТЫ С ИНВЕНТАРИЗАЦИЕЙ ===
+    fun addInventoryItem(name: String, inventoryNumber: String, location: String,
+                         condition: String, description: String, barcode: String? = null): Long {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_INVENTORY_NAME, name)
+            put(COLUMN_INVENTORY_NUMBER, inventoryNumber)
+            put(COLUMN_LOCATION, location)
+            put(COLUMN_CONDITION, condition)
+            put(COLUMN_DESCRIPTION_INV, description)
+            put(COLUMN_BARCODE_INV, barcode)
+            put(COLUMN_ADDED_DATE, SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()))
+        }
+        return db.insert(TABLE_INVENTORY, null, values)
+    }
+
+    fun getAllInventoryItems(): List<InventoryItem> {
+        val items = mutableListOf<InventoryItem>()
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_INVENTORY ORDER BY $COLUMN_INVENTORY_NAME", null)
+
+        cursor.use {
+            while (it.moveToNext()) {
+                val item = InventoryItem(
+                    id = it.getInt(it.getColumnIndexOrThrow(COLUMN_INVENTORY_ID)),
+                    name = it.getString(it.getColumnIndexOrThrow(COLUMN_INVENTORY_NAME)),
+                    inventoryNumber = it.getString(it.getColumnIndexOrThrow(COLUMN_INVENTORY_NUMBER)),
+                    location = it.getString(it.getColumnIndexOrThrow(COLUMN_LOCATION)),
+                    condition = it.getString(it.getColumnIndexOrThrow(COLUMN_CONDITION)),
+                    description = it.getString(it.getColumnIndexOrThrow(COLUMN_DESCRIPTION_INV)),
+                    barcode = it.getString(it.getColumnIndexOrThrow(COLUMN_BARCODE_INV)),
+                    photoPath = it.getString(it.getColumnIndexOrThrow(COLUMN_PHOTO_PATH)),
+                    addedDate = it.getString(it.getColumnIndexOrThrow(COLUMN_ADDED_DATE))
+                )
+                items.add(item)
+            }
+        }
+        db.close()
+        return items
+    }
+
+    fun searchInventory(query: String): List<InventoryItem> {
+        val items = mutableListOf<InventoryItem>()
+        val db = this.readableDatabase
+        val selection = "$COLUMN_INVENTORY_NAME LIKE ? OR $COLUMN_INVENTORY_NUMBER LIKE ? OR $COLUMN_LOCATION LIKE ?"
+        val selectionArgs = arrayOf("%$query%", "%$query%", "%$query%")
+
+        val cursor = db.query(TABLE_INVENTORY, null, selection, selectionArgs, null, null, null)
+
+        cursor.use {
+            while (it.moveToNext()) {
+                val item = InventoryItem(
+                    id = it.getInt(it.getColumnIndexOrThrow(COLUMN_INVENTORY_ID)),
+                    name = it.getString(it.getColumnIndexOrThrow(COLUMN_INVENTORY_NAME)),
+                    inventoryNumber = it.getString(it.getColumnIndexOrThrow(COLUMN_INVENTORY_NUMBER)),
+                    location = it.getString(it.getColumnIndexOrThrow(COLUMN_LOCATION)),
+                    condition = it.getString(it.getColumnIndexOrThrow(COLUMN_CONDITION)),
+                    description = it.getString(it.getColumnIndexOrThrow(COLUMN_DESCRIPTION_INV)),
+                    barcode = it.getString(it.getColumnIndexOrThrow(COLUMN_BARCODE_INV)),
+                    photoPath = it.getString(it.getColumnIndexOrThrow(COLUMN_PHOTO_PATH)),
+                    addedDate = it.getString(it.getColumnIndexOrThrow(COLUMN_ADDED_DATE))
+                )
+                items.add(item)
+            }
+        }
+        db.close()
+        return items
+    }
+
+    fun getInventoryByBarcode(barcode: String): InventoryItem? {
+        val db = this.readableDatabase
+        val selection = "$COLUMN_BARCODE_INV = ?"
+        val selectionArgs = arrayOf(barcode)
+        val cursor = db.query(TABLE_INVENTORY, null, selection, selectionArgs, null, null, null)
+
+        return if (cursor.moveToFirst()) {
+            val item = InventoryItem(
+                id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_INVENTORY_ID)),
+                name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_INVENTORY_NAME)),
+                inventoryNumber = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_INVENTORY_NUMBER)),
+                location = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCATION)),
+                condition = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CONDITION)),
+                description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION_INV)),
+                barcode = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BARCODE_INV)),
+                photoPath = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PHOTO_PATH)),
+                addedDate = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADDED_DATE))
+            )
+            cursor.close()
+            item
+        } else {
+            cursor.close()
+            null
+        }
+    }
+
+    // === МЕТОДЫ РАБОТЫ СО СТАТУСАМИ ЗАЯВОК ===
+    fun updateApplicationStatus(applicationId: Int, status: String, assignedTo: Int? = null): Boolean {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_APPLICATION_ID_FK, applicationId)
+            put(COLUMN_STATUS_APP, status)
+            put(COLUMN_STATUS_DATE, SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()))
+            if (assignedTo != null) {
+                put(COLUMN_ASSIGNED_TO, assignedTo)
+            }
+        }
+        val result = db.insert(TABLE_APPLICATION_STATUS, null, values)
+        return result != -1L
+    }
+
+    fun getApplicationStatus(applicationId: Int): String {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT $COLUMN_STATUS_APP FROM $TABLE_APPLICATION_STATUS WHERE $COLUMN_APPLICATION_ID_FK = ? ORDER BY $COLUMN_STATUS_DATE DESC LIMIT 1",
+            arrayOf(applicationId.toString())
+        )
+
+        return if (cursor.moveToFirst()) {
+            val status = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_STATUS_APP))
+            cursor.close()
+            status
+        } else {
+            cursor.close()
+            "Новая"
+        }
+    }
+
+    // === ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===
+    fun checkDatabase(): Boolean {
+        val db = this.readableDatabase
+        return try {
+            db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='$TABLE_APPLICATION'", null).use { cursor ->
+                cursor.count > 0
+            }
+        } catch (e: Exception) {
+            Log.e("DatabaseHelper", "Error checking database", e)
+            false
+        } finally {
+            db.close()
+        }
+    }
+
+    fun checkTableStructure(): Boolean {
+        val db = this.readableDatabase
+        return try {
+            db.rawQuery("PRAGMA table_info($TABLE_APPLICATION)", null).use { cursor ->
+                Log.d("DatabaseHelper", "Table structure of $TABLE_APPLICATION:")
+                while (cursor.moveToNext()) {
+                    val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
+                    val type = cursor.getString(cursor.getColumnIndexOrThrow("type"))
+                    Log.d("DatabaseHelper", "Column: $name, Type: $type")
+                }
+                true
+            }
+        } catch (e: Exception) {
+            Log.e("DatabaseHelper", "Error checking table structure", e)
+            false
+        } finally {
+            db.close()
+        }
+    }
+
+    fun addTestUser(): Long {
+        return addUser("testuser", "testpassword")
     }
 
     // === DATA CLASSES ===
@@ -510,5 +746,17 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val totalPaid: Double,
         val totalPending: Double,
         val serviceBreakdown: Map<String, Double>
+    )
+
+    data class InventoryItem(
+        val id: Int,
+        val name: String,
+        val inventoryNumber: String,
+        val location: String,
+        val condition: String,
+        val description: String,
+        val barcode: String?,
+        val photoPath: String?,
+        val addedDate: String
     )
 }

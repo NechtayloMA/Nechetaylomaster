@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Разрешения для камеры и сканирования штрих-кодов -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,7 +26,8 @@
 
         <activity android:name=".MainMenuActivity" />
         <activity android:name=".MetersActivity" />
-        <!-- ДОБАВЬТЕ ЭТИ НОВЫЕ АКТИВНОСТИ -->
+
+        <!-- Существующие активности -->
         <activity
             android:name=".HistoryActivity"
             android:label="История показаний" />
@@ -39,6 +44,63 @@
             android:name=".ApplicationsListActivity"
             android:label="Мои заявки"
             android:parentActivityName=".ApplicationsActivity" />
+
+        <!-- НОВЫЕ АКТИВНОСТИ ДЛЯ СТРУКТУРИРОВАННОГО МЕНЮ -->
+
+        <!-- Коммунальные услуги -->
+        <activity
+            android:name=".UtilitiesActivity"
+            android:label="Коммунальные услуги"
+            android:parentActivityName=".MainMenuActivity" />
+
+        <!-- Инвентаризация -->
+        <activity
+            android:name=".InventoryActivity"
+            android:label="Инвентаризация"
+            android:parentActivityName=".MainMenuActivity" />
+
+        <activity
+            android:name=".InventoryCatalogActivity"
+            android:label="Каталог имущества"
+            android:parentActivityName=".InventoryActivity" />
+
+        <activity
+            android:name=".AddInventoryItemActivity"
+            android:label="Добавить имущество"
+            android:parentActivityName=".InventoryActivity" />
+
+        <activity
+            android:name=".SearchInventoryActivity"
+            android:label="Поиск имущества"
+            android:parentActivityName=".InventoryActivity" />
+
+        <!-- Заявки -->
+        <activity
+            android:name=".RequestsActivity"
+            android:label="Управление заявками"
+            android:parentActivityName=".MainMenuActivity" />
+
+        <activity
+            android:name=".ManageApplicationsActivity"
+            android:label="Управление заявками (исполнитель)"
+            android:parentActivityName=".RequestsActivity" />
+
+        <activity
+            android:name=".CompletedApplicationsActivity"
+            android:label="Выполненные заявки"
+            android:parentActivityName=".RequestsActivity" />
+
+        <!-- Настройки -->
+        <activity
+            android:name=".SettingsActivity"
+            android:label="Настройки"
+            android:parentActivityName=".MainMenuActivity" />
+
+        <activity
+            android:name=".EditProfileActivity"
+            android:label="Редактирование профиля"
+            android:parentActivityName=".SettingsActivity" />
+
     </application>
 
 </manifest>

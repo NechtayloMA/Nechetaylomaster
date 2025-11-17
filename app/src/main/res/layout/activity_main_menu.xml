@@ -42,40 +42,28 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnMeters"
+        android:id="@+id/btnUtilities"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Снятие счетчиков"
-        android:layout_marginBottom="8dp"
-        android:background="@color/button_meters_color"
-        android:textColor="@color/white"/>
+        android:text="Коммунальные услуги" />
 
     <Button
-        android:id="@+id/btnBarcode"
+        android:id="@+id/btnInventory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Сканирование штрих-кода"
-        android:layout_marginBottom="8dp"
-        android:background="@color/button_meters_color"
-        android:textColor="@color/white"/>
-
-    <Button
-        android:id="@+id/btnCreateRequest"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Оставить заявку"
-        android:layout_marginBottom="8dp"
-        android:background="@color/button_meters_color"
-        android:textColor="@color/white"/>
+        android:text="Инвентаризация" />
 
     <Button
         android:id="@+id/btnRequests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Список актуальных заявок"
-        android:layout_marginBottom="8dp"
-        android:background="@color/button_meters_color"
-        android:textColor="@color/white"/>
+        android:text="Заявки" />
+
+    <Button
+        android:id="@+id/btnSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Настройки" />
 
     <Button
         android:id="@+id/btnAbout"

@@ -11,7 +11,6 @@ class ApplicationsListActivity : AppCompatActivity() {
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var recyclerView: RecyclerView
     private lateinit var applicationsAdapter: ApplicationsAdapter
-    private var applicationsList = mutableListOf<DatabaseHelper.Application>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +27,7 @@ class ApplicationsListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        applicationsAdapter = ApplicationsAdapter(applicationsList)
+        applicationsAdapter = ApplicationsAdapter(dbHelper) // Теперь передаем только dbHelper
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = applicationsAdapter
 
@@ -45,9 +44,9 @@ class ApplicationsListActivity : AppCompatActivity() {
         try {
             // Получаем все заявки из базы данных
             val applications = dbHelper.getAllApplications()
-            applicationsList.clear()
-            applicationsList.addAll(applications)
-            applicationsAdapter.notifyDataSetChanged()
+
+            // Используем submitList вместо notifyDataSetChanged для эффективного обновления
+            applicationsAdapter.submitList(applications)
 
             if (applications.isEmpty()) {
                 Toast.makeText(this, "Заявок пока нет", Toast.LENGTH_SHORT).show()
