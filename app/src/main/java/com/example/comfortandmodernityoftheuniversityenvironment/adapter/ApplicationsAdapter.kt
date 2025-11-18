@@ -27,16 +27,29 @@ class ApplicationsAdapter :
 
             // Цвет статуса в зависимости от состояния
             setStatusColor(application.status)
+            // Цвет приоритета в зависимости от уровня
+            setPriorityColor(application.priority)
         }
 
         private fun setStatusColor(status: String) {
             val color = when (status) {
-                "Выполнено" -> android.graphics.Color.GREEN
-                "В работе" -> android.graphics.Color.BLUE
-                "Отложено" -> android.graphics.Color.YELLOW
+                "Выполнено" -> android.graphics.Color.parseColor("#00bd1c")
+                "В работе" -> android.graphics.Color.parseColor("#1526e8")
+                "Отложено" -> android.graphics.Color.parseColor("#8b3e13")
                 else -> android.graphics.Color.GRAY
             }
             tvStatus.setTextColor(color)
+        }
+
+        private fun setPriorityColor(priority: String) {
+            val color = when (priority) {
+                "Низкий" -> android.graphics.Color.parseColor("#00a619")
+                "Средний" -> android.graphics.Color.parseColor("#e6c702")
+                "Высокий" -> android.graphics.Color.parseColor("#c94e0c")
+                "Критический" -> android.graphics.Color.parseColor("#e30000")
+                else -> android.graphics.Color.GRAY
+            }
+            tvPriority.setTextColor(color)
         }
     }
 

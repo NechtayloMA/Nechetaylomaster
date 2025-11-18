@@ -34,7 +34,7 @@
         android:text="Заявок пока нет\n\nСоздайте первую заявку!"
         android:textSize="18sp"
         android:gravity="center"
-        android:textColor="#333"
+        android:textColor="#181818"
         android:visibility="gone" />
 
 </LinearLayout>

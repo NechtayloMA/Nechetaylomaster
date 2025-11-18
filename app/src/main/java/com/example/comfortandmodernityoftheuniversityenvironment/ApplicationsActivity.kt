@@ -64,7 +64,7 @@ class ApplicationsActivity : AppCompatActivity() {
     private fun createTestUserIfNeeded() {
         try {
             // Пытаемся добавить тестового пользователя
-            val testUserId = dbHelper.addUser("testuser", "password123")
+            val testUserId = dbHelper.addUser("test", "P@ss25")
             if (testUserId != -1L) {
                 android.util.Log.d("ApplicationsActivity", "Test user added with ID: $testUserId")
             } else {

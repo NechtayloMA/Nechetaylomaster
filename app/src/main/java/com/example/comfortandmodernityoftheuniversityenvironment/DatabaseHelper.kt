@@ -455,8 +455,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 applications.add(application)
             }
         }
-        db.close()
         return applications
+    }
+
+    // Добавьте этот метод в класс DatabaseHelper
+    fun checkUserExists(userId: Int): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT $COLUMN_USER_ID FROM $TABLE_USERS WHERE $COLUMN_USER_ID = ?", arrayOf(userId.toString()))
+        val exists = cursor.count > 0
+        cursor.close()
+        return exists
     }
 
     // === МЕТОДЫ РАБОТЫ С ПЛАТЕЖАМИ ===
