@@ -11,7 +11,6 @@ class PaymentsActivity : AppCompatActivity() {
 
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var listView: ListView
-    private lateinit var tvEmpty: TextView
     private lateinit var tvTotalPaid: TextView
     private lateinit var tvTotalPending: TextView
 
@@ -21,7 +20,6 @@ class PaymentsActivity : AppCompatActivity() {
 
         dbHelper = DatabaseHelper(this)
         listView = findViewById(R.id.lvPayments)
-        tvEmpty = findViewById(R.id.tvEmpty)
         tvTotalPaid = findViewById(R.id.tvTotalPaid)
         tvTotalPending = findViewById(R.id.tvTotalPending)
 
@@ -34,9 +32,13 @@ class PaymentsActivity : AppCompatActivity() {
         val payments = dbHelper.getPayments(userId)
 
         if (payments.isEmpty()) {
-            tvEmpty.text = "История платежей пуста"
-            listView.visibility = android.view.View.GONE
-            tvEmpty.visibility = android.view.View.VISIBLE
+            // ИСПРАВЛЕНИЕ: Используем стандартный способ показа пустого списка
+            val adapter = ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                listOf("История платежей пуста")
+            )
+            listView.adapter = adapter
         } else {
             val adapter = ArrayAdapter(
                 this,
@@ -49,10 +51,7 @@ class PaymentsActivity : AppCompatActivity() {
                             "📊 Статус: ${payment.status}"
                 }
             )
-
             listView.adapter = adapter
-            listView.visibility = android.view.View.VISIBLE
-            tvEmpty.visibility = android.view.View.GONE
         }
     }
 
@@ -61,7 +60,8 @@ class PaymentsActivity : AppCompatActivity() {
         val statistics = dbHelper.getPaymentStatistics(userId)
         val decimalFormat = DecimalFormat("#.##")
 
-        tvTotalPaid.text = "Оплачено: ${decimalFormat.format(statistics.totalPaid)} руб."
-        tvTotalPending.text = "К оплате: ${decimalFormat.format(statistics.totalPending)} руб."
+        // ИСПРАВЛЕНИЕ: Используем ресурсы строк вместо конкатенации
+        tvTotalPaid.text = resources.getString(R.string.total_paid, decimalFormat.format(statistics.totalPaid))
+        tvTotalPending.text = resources.getString(R.string.total_pending, decimalFormat.format(statistics.totalPending))
     }
 }

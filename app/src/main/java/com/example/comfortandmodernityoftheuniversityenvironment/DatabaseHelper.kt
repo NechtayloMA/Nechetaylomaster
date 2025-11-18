@@ -720,7 +720,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val title: String,
         val content: String,
         val priority: String,
-        val date: String
+        val date: String,
+        val status: String = ""
     )
 
     data class MeterReading(

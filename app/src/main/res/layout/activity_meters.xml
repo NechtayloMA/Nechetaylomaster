@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Введите показания счетчиков"
+        android:text="@string/enter_meter_readings"
         android:textSize="28sp"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="16dp"
@@ -19,87 +19,62 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Вода (куб.м)"
+        android:text="@string/water_cubic_meters"
         android:layout_marginTop="8dp"/>
 
     <EditText
         android:id="@+id/etWater"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"/>
+        android:layout_height="48dp"
+        android:minHeight="48dp"
+        android:inputType="numberDecimal"
+        android:importantForAutofill="yes"
+        android:contentDescription="@string/water_input_description"
+        android:hint="@string/water_hint"
+        android:autofillHints="water_reading"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Газ (куб.м)"
+        android:text="@string/gas_cubic_meters"
         android:layout_marginTop="8dp"/>
 
     <EditText
         android:id="@+id/etGas"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"/>
+        android:layout_height="48dp"
+        android:minHeight="48dp"
+        android:inputType="numberDecimal"
+        android:importantForAutofill="yes"
+        android:contentDescription="@string/gas_input_description"
+        android:hint="@string/gas_hint"
+        android:autofillHints="gas_reading"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Электричество (кВт/ч)"
+        android:text="@string/electricity_kwh"
         android:layout_marginTop="8dp"/>
 
     <EditText
         android:id="@+id/etElectricity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"/>
+        android:layout_height="48dp"
+        android:minHeight="48dp"
+        android:inputType="numberDecimal"
+        android:importantForAutofill="yes"
+        android:contentDescription="@string/electricity_input_description"
+        android:hint="@string/electricity_hint"
+        android:autofillHints="electricity_reading"/>
 
     <Button
         android:id="@+id/btnSubmit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Сохранить"
+        android:minHeight="48dp"
+        android:text="@string/save_button"
         android:layout_marginTop="16dp"
         android:background="@color/button_login_color"
         android:textColor="@color/white"/>
-
-    <!-- НОВЫЕ КНОПКИ ДЛЯ НАВИГАЦИИ -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="16dp">
-
-        <Button
-            android:id="@+id/btnHistory"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="История"
-            android:layout_marginEnd="4dp"
-            android:background="@color/blue_light"
-            android:textColor="@color/white"/>
-
-        <!-- Измените текст кнопки -->
-        <Button
-            android:id="@+id/btnCharts"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Анализ"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:background="@color/green_light"
-            android:textColor="@color/white"/>
-
-        <Button
-            android:id="@+id/btnPayments"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Платежи"
-            android:layout_marginStart="4dp"
-            android:background="@color/orange_light"
-            android:textColor="@color/white"/>
-
-    </LinearLayout>
 
 </LinearLayout>

@@ -15,9 +15,6 @@ class MetersActivity : AppCompatActivity() {
     private lateinit var etGas: EditText
     private lateinit var etElectricity: EditText
     private lateinit var btnSubmit: Button
-    private lateinit var btnHistory: Button
-    private lateinit var btnCharts: Button
-    private lateinit var btnPayments: Button
     private lateinit var dbHelper: DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +28,6 @@ class MetersActivity : AppCompatActivity() {
         etGas = findViewById(R.id.etGas)
         etElectricity = findViewById(R.id.etElectricity)
         btnSubmit = findViewById(R.id.btnSubmit)
-        btnHistory = findViewById(R.id.btnHistory)
-        btnCharts = findViewById(R.id.btnCharts)
-        btnPayments = findViewById(R.id.btnPayments)
 
         // Обработчик кнопки сохранения
         btnSubmit.setOnClickListener {
@@ -68,22 +62,6 @@ class MetersActivity : AppCompatActivity() {
             } catch (e: NumberFormatException) {
                 Toast.makeText(this, "Введите корректные числа", Toast.LENGTH_SHORT).show()
             }
-        }
-
-        // НОВЫЕ ОБРАБОТЧИКИ КНОПОК НАВИГАЦИИ
-        btnHistory.setOnClickListener {
-            val intent = Intent(this, HistoryActivity::class.java)
-            startActivity(intent)
-        }
-
-        btnCharts.setOnClickListener {
-            val intent = Intent(this, ChartsActivity::class.java)
-            startActivity(intent)
-        }
-
-        btnPayments.setOnClickListener {
-            val intent = Intent(this, PaymentsActivity::class.java)
-            startActivity(intent)
         }
     }
 }

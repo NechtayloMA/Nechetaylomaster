@@ -18,7 +18,8 @@ class HistoryActivity : AppCompatActivity() {
 
         dbHelper = DatabaseHelper(this)
         listView = findViewById(R.id.lvHistory)
-        tvEmpty = findViewById(R.id.tvEmpty)
+        // ИСПРАВЛЕНИЕ: Используем правильный ID из макета
+        tvEmpty = findViewById(R.id.tvEmptyHistory)
 
         loadHistory()
     }

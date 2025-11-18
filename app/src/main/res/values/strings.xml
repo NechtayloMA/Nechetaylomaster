@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Comfort and modernity of the university environment</string>
+    <string name="priority_format">Приоритет: %s</string>
+    <string name="status_format">Статус: %s</string>
+    <string name="total_paid">Оплачено: %s руб.</string>
+    <string name="total_pending">К оплате: %s руб.</string>
+
+    <!-- Meters Activity Strings -->
+    <string name="enter_meter_readings">Введите показания счетчиков</string>
+    <string name="water_cubic_meters">Вода (куб.м)</string>
+    <string name="gas_cubic_meters">Газ (куб.м)</string>
+    <string name="electricity_kwh">Электричество (кВт/ч)</string>
+    <string name="save_button">Сохранить</string>
+
+    <!-- Accessibility and hints -->
+    <string name="water_input_description">Поле для ввода показаний счетчика воды</string>
+    <string name="gas_input_description">Поле для ввода показаний счетчика газа</string>
+    <string name="electricity_input_description">Поле для ввода показаний счетчика электроэнергии</string>
+
+    <string name="water_hint">Введите показания воды</string>
+    <string name="gas_hint">Введите показания газа</string>
+    <string name="electricity_hint">Введите показания электричества</string>
 </resources>
