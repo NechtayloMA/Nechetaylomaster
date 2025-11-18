@@ -7,14 +7,16 @@
     android:padding="16dp"
     tools:context=".BarcodeActivity">
 
-    <Button
-        android:id="@+id/btnScan"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Сканировать штрих-код"
-        android:layout_marginTop="100dp"
-        android:background="@color/button_login_color"
-        android:textColor="@color/white"/>
+        android:text="Cканирование штрих-кода"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="24dp"
+        android:textColor="@color/button_login_color"/>
 
     <TextView
         android:id="@+id/tvBarcode"
@@ -44,5 +46,14 @@
         android:layout_height="wrap_content"
         android:text="Инвентаризационная информация:"
         android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btnScan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Сканировать штрих-код"
+        android:layout_marginTop="100dp"
+        android:background="@color/button_login_color"
+        android:textColor="@color/white"/>
 
 </LinearLayout>
